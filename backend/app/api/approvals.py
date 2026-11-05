@@ -15,6 +15,15 @@ def get_approvals(
 ):
     return ApprovalService.get_approval_requests(db, employee_id=employee_id, status=status)
 
+# NOTE: /audit-logs must be declared BEFORE /{approval_id}/decide to avoid
+# FastAPI matching "audit-logs" as a path parameter.
+@router.get("/audit-logs", response_model=List[AuditLogResponse])
+def get_audit_logs(
+    employee_id: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    return ApprovalService.get_audit_logs(db, employee_id=employee_id)
+
 @router.post("/{approval_id}/decide", response_model=ApprovalRequestResponse)
 def decide_approval(
     approval_id: str,
@@ -27,10 +36,3 @@ def decide_approval(
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/audit-logs", response_model=List[AuditLogResponse])
-def get_audit_logs(
-    employee_id: Optional[str] = Query(None),
-    db: Session = Depends(get_db)
-):
-    return ApprovalService.get_audit_logs(db, employee_id=employee_id)

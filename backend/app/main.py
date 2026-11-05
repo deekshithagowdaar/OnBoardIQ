@@ -54,7 +54,8 @@ def root():
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "timestamp": "2026-11-04T14:30:00Z"}
+    from datetime import datetime, timezone
+    return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
 
 # Include API Routers
 app.include_router(employees_router, prefix=settings.API_V1_STR)

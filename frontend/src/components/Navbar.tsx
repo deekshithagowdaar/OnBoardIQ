@@ -6,9 +6,10 @@ import { Employee } from '../types';
 interface Props {
   selectedEmployeeId: string;
   onSelectEmployee: (id: string) => void;
+  onAgentComplete?: () => void;
 }
 
-export const Navbar: React.FC<Props> = ({ selectedEmployeeId, onSelectEmployee }) => {
+export const Navbar: React.FC<Props> = ({ selectedEmployeeId, onSelectEmployee, onAgentComplete }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [runningAgent, setRunningAgent] = useState(false);
 
@@ -21,8 +22,8 @@ export const Navbar: React.FC<Props> = ({ selectedEmployeeId, onSelectEmployee }
     setRunningAgent(true);
     try {
       await apiClient.runOrchestrator(selectedEmployeeId);
-      // reload or trigger update
-      window.location.reload();
+      if (onAgentComplete) onAgentComplete();
+      else window.location.reload();
     } catch (err) {
       console.error(err);
     } finally {

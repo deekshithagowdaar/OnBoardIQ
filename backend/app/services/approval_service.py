@@ -26,11 +26,12 @@ class ApprovalService:
         employee_id: str,
         recommendation: Dict[str, Any]
     ) -> ApprovalRequest:
-        # Check if an active pending approval already exists for this action
+        # If a Pending approval already exists for this employee+action, reuse it.
+        # Also skip creation if one was already Approved (action already executed).
         existing = db.query(ApprovalRequest).filter(
             ApprovalRequest.employee_id == employee_id,
-            ApprovalRequest.status == "Pending",
-            ApprovalRequest.action_type == recommendation.get("action_type")
+            ApprovalRequest.action_type == recommendation.get("action_type"),
+            ApprovalRequest.status.in_(["Pending", "Approved"])
         ).first()
         if existing:
             return existing
