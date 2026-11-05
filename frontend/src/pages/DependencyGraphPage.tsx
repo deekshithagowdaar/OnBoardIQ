@@ -46,11 +46,10 @@ export const DependencyGraphPage: React.FC<Props> = ({ selectedEmployeeId }) => 
   }, [selectedEmployeeId]);
 
   const onNodeClick = (_: any, node: any) => {
-    // Look up task details
-    apiClient.getTasks(selectedEmployeeId).then((tasks) => {
-      const found = tasks.find((t) => t.id === node.id);
-      if (found) setSelectedTask(found);
-    });
+    const found = nodes.find((n) => n.id === node.id);
+    if (found?.data) {
+      setSelectedTask(found.data as any);
+    }
   };
 
   if (loading) {

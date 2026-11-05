@@ -105,5 +105,23 @@ class LearningEngine:
             "prediction_accuracy_mae": round(mae, 2),
             "prediction_vs_actual": prediction_vs_actual,
             "department_performance": department_performance,
-            "historical_outcomes": outcomes[:50],
+            "historical_outcomes": [
+                {
+                    "id": o.id,
+                    "employee_id": o.employee_id,
+                    "department": o.department,
+                    "task_id": o.task_id,
+                    "task_name": o.task_name,
+                    "predicted_delay_days": o.predicted_delay_days,
+                    "actual_delay_days": o.actual_delay_days,
+                    "root_cause_category": o.root_cause_category,
+                    "recovery_strategy_used": o.recovery_strategy_used,
+                    "was_approved": o.was_approved,
+                    "recovery_outcome": o.recovery_outcome,
+                    "time_saved_actual_days": o.time_saved_actual_days,
+                    "completion_timestamp": o.completion_timestamp.isoformat() if o.completion_timestamp else None,
+                    "is_synthetic_seed": o.is_synthetic_seed,
+                }
+                for o in outcomes[:50]
+            ],
         }

@@ -83,7 +83,7 @@ class EmployeeService:
         if not emp:
             return None
 
-        update_data = employee_update.dict(exclude_unset=True)
+        update_data = employee_update.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(emp, key, value)
 

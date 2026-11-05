@@ -6,6 +6,9 @@ from app.models.employee import Department, User, Employee
 from app.models.analytics import HistoricalOutcome
 from app.services.employee_service import EmployeeService
 
+def _future_date(days: int) -> str:
+    return (datetime.date.today() + datetime.timedelta(days=days)).isoformat()
+
 def init_db(target_engine=None):
     Base.metadata.create_all(bind=target_engine or engine)
 
@@ -54,7 +57,7 @@ def seed_demo_data(target_db: Session = None):
             job_role="Software Developer",
             employment_type="Full-time",
             work_location="Hybrid - New York HQ",
-            joining_date="2026-11-20",
+            joining_date=_future_date(16),
             reporting_manager="Sarah Johnson",
             experience_level="Senior",
             required_equipment=["MacBook Pro 16 M3 Max", "2x Dell UltraSharp 4K", "YubiKey 5C NFC", "CalDigit TS4 Dock"],
@@ -76,7 +79,7 @@ def seed_demo_data(target_db: Session = None):
             job_role="Senior Product Manager",
             employment_type="Full-time",
             work_location="Remote - US",
-            joining_date="2026-11-25",
+            joining_date=_future_date(21),
             reporting_manager="Elena Rostova",
             experience_level="Lead",
             required_equipment=["MacBook Air 15 M3", "Dell 34 Curved Monitor", "YubiKey 5C"],
@@ -97,7 +100,7 @@ def seed_demo_data(target_db: Session = None):
             job_role="Enterprise Account Executive",
             employment_type="Full-time",
             work_location="On-site - San Francisco",
-            joining_date="2026-12-01",
+            joining_date=_future_date(27),
             reporting_manager="Michael Scott",
             experience_level="Senior",
             required_equipment=["ThinkPad X1 Carbon", "Logitech Wireless Headset"],
