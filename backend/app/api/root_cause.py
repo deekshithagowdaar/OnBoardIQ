@@ -8,6 +8,7 @@ from app.models.risk import RootCauseAnalysis
 from app.services.task_service import TaskService
 from app.engine.root_cause_engine import RootCauseEngine
 from app.schemas.risk import RootCauseAnalysisResponse
+from app.services.llm_service import LLMService
 
 router = APIRouter(prefix="/root-cause", tags=["Root Cause Analysis"])
 
@@ -39,7 +40,6 @@ def get_root_cause_analysis(employee_id: str, db: Session = Depends(get_db)):
 
     rc_data = RootCauseEngine.analyze_root_cause(task_dicts, deps)
     if not rc_data:
-        # If no delayed or blocked tasks, construct normal health report
         rc_data = {
             "primary_delayed_task_id": "NONE",
             "primary_delayed_task_name": "No Delayed Tasks",
@@ -52,6 +52,15 @@ def get_root_cause_analysis(employee_id: str, db: Session = Depends(get_db)):
             "estimated_joining_date_impact_days": 0.0,
             "evidence": {"status": "HEALTHY"}
         }
+    else:
+        # Replace deterministic explanation with LLM-generated one
+        blocked_names = [t["task_name"] for t in rc_data.get("affected_downstream_tasks", [])]
+        rc_data["explanation"] = LLMService.explain_root_cause_and_impact(
+            root_task_name=rc_data["root_cause_task_name"],
+            blocked_tasks=blocked_names,
+            delay_days=rc_data["estimated_joining_date_impact_days"],
+            department=rc_data["evidence"].get("root_department", "HR")
+        )
 
     analysis = RootCauseAnalysis(
         id=str(uuid.uuid4()),

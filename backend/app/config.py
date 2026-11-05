@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     
     # LLM / Ollama configuration
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "llama3")
-    USE_LOCAL_LLM: bool = os.getenv("USE_LOCAL_LLM", "false").lower() == "true"
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "phi3:latest")
+    USE_LOCAL_LLM: bool = os.getenv("USE_LOCAL_LLM", "true").lower() == "true"
     DEMO_MODE: bool = True  # Always enables high-fidelity deterministic fallback if LLM is unavailable
     
     # CORS

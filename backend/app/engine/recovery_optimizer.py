@@ -1,5 +1,6 @@
 from typing import List, Dict, Any, Optional
 import uuid
+from app.services.llm_service import LLMService
 
 class RecoveryOptimizer:
     """
@@ -55,26 +56,15 @@ class RecoveryOptimizer:
         scored_scenarios.sort(key=lambda x: x["score"], reverse=True)
         winner = scored_scenarios[0]["scenario"]
 
-        # Compose explainable rationale
-        if winner["scenario_key"] == "scenario_a":
-            rationale = (
-                f"Recommended: Scenario A ('{winner['scenario_title']}'). "
-                f"This strategy directly addresses the root upstream bottleneck ('Identity Verification'), "
-                f"immediately unblocking {winner['unblocked_count']} downstream technical task(s) including System Account Creation and Developer Environment Setup. "
-                f"It delivers the highest timeline compression ({winner['time_saved_days']} days saved) and elevates the Onboarding Readiness Score "
-                f"to {winner['readiness_score_projected']}% while strictly preserving 100% regulatory compliance."
-            )
-        elif winner["scenario_key"] == "scenario_b":
-            rationale = (
-                f"Recommended: Scenario B ('{winner['scenario_title']}'). "
-                f"Assigning an authorized senior resource enables parallel account staging, saving {winner['time_saved_days']} days. "
-                f"Approval is required to activate the staging clearance."
-            )
-        else:
-            rationale = (
-                f"Recommended: Scenario C ('{winner['scenario_title']}'). "
-                f"Prioritizing independent tasks maintains momentum while waiting for upstream resolution, saving {winner['time_saved_days']} days."
-            )
+        # Generate LLM rationale
+        rejected = [s["scenario"]["scenario_title"] for s in scored_scenarios[1:]]
+        rationale = LLMService.explain_recovery_recommendation(
+            winning_scenario_title=winner["scenario_title"],
+            time_saved=winner["time_saved_days"],
+            unblocked_count=winner["unblocked_count"],
+            readiness_score=winner["readiness_score_projected"],
+            rejected_scenarios=rejected
+        )
 
         comparison_summary = {
             "evaluated_scenarios_count": len(scenarios),
