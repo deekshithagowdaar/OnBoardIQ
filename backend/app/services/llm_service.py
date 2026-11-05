@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 def _call_ollama(prompt: str) -> str:
-    """Call Ollama and return the response text. Raises on failure."""
     response = httpx.post(
         f"{settings.OLLAMA_BASE_URL}/api/generate",
         json={"model": settings.OLLAMA_MODEL, "prompt": prompt, "stream": False},
@@ -36,9 +35,9 @@ class LLMService:
                 return _call_ollama(prompt)
             except Exception as e:
                 logger.warning(f"[LLMService] plan generation failed: {e}")
-                pass
 
-        return ( for {name} ({role}). "
+        return (
+            f"Tailored {dept} onboarding track for {name} ({role}). "
             f"Configured with technical environment provisioning, security clearance, "
             f"compliance identity checks, and Day-1 integration checkpoints."
         )
@@ -64,9 +63,9 @@ class LLMService:
                 return _call_ollama(prompt)
             except Exception as e:
                 logger.warning(f"[LLMService] root cause explanation failed: {e}")
-                pass
 
-        return ( is '{root_task_name}'. "
+        return (
+            f"Analysis confirms that the primary blocker is '{root_task_name}'. "
             f"This bottleneck halts {len(blocked_tasks)} dependent technical task(s): [{blocked_str}]. "
             f"Without corrective intervention, Day-1 readiness is compromised by approximately {delay_days} days."
         )
@@ -94,9 +93,9 @@ class LLMService:
                 return _call_ollama(prompt)
             except Exception as e:
                 logger.warning(f"[LLMService] recovery rationale failed: {e}")
-                pass
 
-        return ( as the optimal recovery strategy. "
+        return (
+            f"'{winning_scenario_title}' was selected as the optimal recovery strategy. "
             f"It delivers the highest utility score by saving {time_saved} days, unblocking "
             f"{unblocked_count} downstream task(s), and elevating Day-1 readiness to {readiness_score}% "
             f"while maintaining full policy compliance."
