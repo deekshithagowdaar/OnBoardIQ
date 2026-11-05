@@ -80,7 +80,7 @@ class SimulationEngine:
 
         # Calculate projected metrics
         projected_readiness = ReadinessEngine.calculate_readiness(updated_tasks)
-        projected_risk = RiskEngine.calculate_employee_risk(updated_tasks, dependencies, "2026-11-20")
+        projected_risk = RiskEngine.calculate_employee_risk(updated_tasks, dependencies, None)
 
         return {
             "id": str(uuid.uuid4()),

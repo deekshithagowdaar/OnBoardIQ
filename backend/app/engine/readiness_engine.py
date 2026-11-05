@@ -14,7 +14,8 @@ class ReadinessEngine:
     @staticmethod
     def calculate_readiness(
         tasks: List[Dict[str, Any]],
-        critical_path_task_ids: List[str] = None
+        critical_path_task_ids: List[str] = None,
+        joining_date_str: str = None
     ) -> Dict[str, Any]:
         if not tasks:
             return {
@@ -25,7 +26,7 @@ class ReadinessEngine:
                 "total_tasks_count": 0,
                 "blocked_tasks_count": 0,
                 "critical_pending_count": 0,
-                "days_until_joining": 5,
+                "days_until_joining": 0,
                 "score_explanation": "No tasks present in onboarding plan.",
                 "formula_breakdown": {},
                 "critical_path_tasks": [],
@@ -64,6 +65,16 @@ class ReadinessEngine:
                 dept_scores[dept] = round((d_done / len(d_list)) * 100.0, 1)
 
         avg_dept_score = sum(dept_scores.values()) / max(1, len(dept_scores))
+
+        # Calculate days until joining
+        days_until_joining = 0
+        if joining_date_str:
+            try:
+                from datetime import date
+                joining = date.fromisoformat(str(joining_date_str))
+                days_until_joining = max(0, (joining - date.today()).days)
+            except (ValueError, TypeError):
+                days_until_joining = 0
 
         # Factor 4: Timeline & Blocker Factor
         blocker_penalty = min(60.0, len(blocked_tasks) * 20.0)
@@ -120,7 +131,7 @@ class ReadinessEngine:
             "total_tasks_count": total_tasks,
             "blocked_tasks_count": len(blocked_tasks),
             "critical_pending_count": len([t for t in critical_tasks if t.get("status") != "Completed"]),
-            "days_until_joining": 5,
+            "days_until_joining": days_until_joining,
             "score_explanation": explanation,
             "formula_breakdown": {
                 "completion_ratio_component": round(completion_ratio * 0.35, 1),

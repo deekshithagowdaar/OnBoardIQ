@@ -11,7 +11,7 @@ class RiskEngine:
     def calculate_employee_risk(
         tasks: List[Dict[str, Any]],
         dependencies: List[Dict[str, Any]],
-        joining_date_str: str
+        joining_date_str: str = None
     ) -> Dict[str, Any]:
         """
         Evaluates the risk of an employee's onboarding process.

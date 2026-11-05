@@ -39,7 +39,7 @@ def get_readiness_score(employee_id: str, db: Session = Depends(get_db)):
     ]
 
     crit_path = DependencyEngine.compute_critical_path(task_dicts, deps)
-    readiness_data = ReadinessEngine.calculate_readiness(task_dicts, crit_path)
+    readiness_data = ReadinessEngine.calculate_readiness(task_dicts, crit_path, emp.joining_date)
 
     snapshot = ReadinessSnapshot(
         id=str(uuid.uuid4()),
