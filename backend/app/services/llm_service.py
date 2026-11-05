@@ -1,6 +1,9 @@
 import httpx
+import logging
 from typing import Dict, Any, List
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 
 def _call_ollama(prompt: str) -> str:
@@ -31,11 +34,11 @@ class LLMService:
                     f"Be specific to their role. Do not use bullet points."
                 )
                 return _call_ollama(prompt)
-            except Exception:
+            except Exception as e:
+                logger.warning(f"[LLMService] plan generation failed: {e}")
                 pass
 
-        return (
-            f"Tailored {dept} onboarding track for {name} ({role}). "
+        return ( for {name} ({role}). "
             f"Configured with technical environment provisioning, security clearance, "
             f"compliance identity checks, and Day-1 integration checkpoints."
         )
@@ -59,11 +62,11 @@ class LLMService:
                     f"Be direct and professional. Do not use bullet points."
                 )
                 return _call_ollama(prompt)
-            except Exception:
+            except Exception as e:
+                logger.warning(f"[LLMService] root cause explanation failed: {e}")
                 pass
 
-        return (
-            f"Analysis confirms that the primary blocker is '{root_task_name}'. "
+        return ( is '{root_task_name}'. "
             f"This bottleneck halts {len(blocked_tasks)} dependent technical task(s): [{blocked_str}]. "
             f"Without corrective intervention, Day-1 readiness is compromised by approximately {delay_days} days."
         )
@@ -89,11 +92,11 @@ class LLMService:
                     f"Be concise and justify the choice clearly. Do not use bullet points."
                 )
                 return _call_ollama(prompt)
-            except Exception:
+            except Exception as e:
+                logger.warning(f"[LLMService] recovery rationale failed: {e}")
                 pass
 
-        return (
-            f"'{winning_scenario_title}' was selected as the optimal recovery strategy. "
+        return ( as the optimal recovery strategy. "
             f"It delivers the highest utility score by saving {time_saved} days, unblocking "
             f"{unblocked_count} downstream task(s), and elevating Day-1 readiness to {readiness_score}% "
             f"while maintaining full policy compliance."
