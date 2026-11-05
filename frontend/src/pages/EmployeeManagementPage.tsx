@@ -150,7 +150,20 @@ export const EmployeeManagementPage: React.FC<Props> = ({ onSelectEmployee }) =>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium">
-              {employees.map((emp) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center">
+                    <div className="w-6 h-6 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto" />
+                  </td>
+                </tr>
+              ) : employees.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-sm text-slate-400 font-medium">
+                    No employees found matching your filters.
+                  </td>
+                </tr>
+              ) : (
+              employees.map((emp) => (
                 <tr key={emp.id} className="hover:bg-slate-50/60 transition-colors">
                   <td className="py-3.5 px-4 font-mono font-semibold text-slate-700">{emp.employee_id}</td>
                   <td className="py-3.5 px-4">
@@ -202,7 +215,8 @@ export const EmployeeManagementPage: React.FC<Props> = ({ onSelectEmployee }) =>
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+              )}
             </tbody>
           </table>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, Clock, AlertTriangle, User } from 'lucide-react';
 import { Task } from '../types';
 import { DepartmentBadge } from './DepartmentBadge';
@@ -12,11 +12,18 @@ interface Props {
 }
 
 export const TaskDetailModal: React.FC<Props> = ({ task, onClose, onTaskUpdated }) => {
-  if (!task) return null;
-
-  const [status, setStatus] = useState(task.status);
-  const [delayReason, setDelayReason] = useState(task.delay_reason || '');
+  const [status, setStatus] = useState(task?.status ?? 'Pending');
+  const [delayReason, setDelayReason] = useState(task?.delay_reason || '');
   const [updating, setUpdating] = useState(false);
+
+  useEffect(() => {
+    if (task) {
+      setStatus(task.status);
+      setDelayReason(task.delay_reason || '');
+    }
+  }, [task]);
+
+  if (!task) return null;
 
   const handleSave = async () => {
     setUpdating(true);

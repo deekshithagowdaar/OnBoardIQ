@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, UserPlus, Check } from 'lucide-react';
 import { Employee } from '../types';
 import { apiClient } from '../api/client';
@@ -11,8 +11,6 @@ interface Props {
 }
 
 export const EmployeeModal: React.FC<Props> = ({ isOpen, onClose, onSaved, employeeToEdit }) => {
-  if (!isOpen) return null;
-
   const [formData, setFormData] = useState({
     employee_id: employeeToEdit?.employee_id || `EMP-2024-${Math.floor(100 + Math.random() * 900)}`,
     full_name: employeeToEdit?.full_name || '',
@@ -28,6 +26,25 @@ export const EmployeeModal: React.FC<Props> = ({ isOpen, onClose, onSaved, emplo
     applicable_requirements: employeeToEdit?.applicable_requirements?.join(', ') || 'I-9 Verification, NDA, Direct Deposit',
   });
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    setFormData({
+      employee_id: employeeToEdit?.employee_id || `EMP-2024-${Math.floor(100 + Math.random() * 900)}`,
+      full_name: employeeToEdit?.full_name || '',
+      email: employeeToEdit?.email || '',
+      department: employeeToEdit?.department || 'Engineering',
+      job_role: employeeToEdit?.job_role || '',
+      employment_type: employeeToEdit?.employment_type || 'Full-time',
+      work_location: employeeToEdit?.work_location || 'Hybrid - New York',
+      joining_date: employeeToEdit?.joining_date || '2026-12-01',
+      reporting_manager: employeeToEdit?.reporting_manager || 'Sarah Johnson',
+      experience_level: employeeToEdit?.experience_level || 'Mid-level',
+      required_equipment: employeeToEdit?.required_equipment?.join(', ') || 'MacBook Pro, 4K Monitor, YubiKey',
+      applicable_requirements: employeeToEdit?.applicable_requirements?.join(', ') || 'I-9 Verification, NDA, Direct Deposit',
+    });
+  }, [employeeToEdit, isOpen]);
+
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

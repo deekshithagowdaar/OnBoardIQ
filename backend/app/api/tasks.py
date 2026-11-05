@@ -63,7 +63,34 @@ def update_task(task_id: str, task_in: TaskUpdate, db: Session = Depends(get_db)
     task = TaskService.update_task(db, task_id, task_in)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    return task
+
+    deps = TaskService.get_dependencies_for_employee(db, task.employee_id)
+    upstream = [d["depends_on_task_id"] for d in deps if d["task_id"] == task.id]
+    downstream = [d["task_id"] for d in deps if d["depends_on_task_id"] == task.id]
+
+    return {
+        "id": task.id,
+        "employee_id": task.employee_id,
+        "task_id": task.task_id,
+        "name": task.name,
+        "description": task.description,
+        "department": task.department,
+        "assigned_person": task.assigned_person,
+        "priority": task.priority,
+        "start_date": task.start_date,
+        "due_date": task.due_date,
+        "estimated_duration_days": task.estimated_duration_days,
+        "actual_completion_date": task.actual_completion_date,
+        "status": task.status,
+        "requires_approval": task.requires_approval,
+        "is_critical": task.is_critical,
+        "delay_reason": task.delay_reason,
+        "category": task.category,
+        "upstream_dependencies": upstream,
+        "downstream_tasks": downstream,
+        "created_at": task.created_at,
+        "updated_at": task.updated_at,
+    }
 
 @router.post("/dependencies", response_model=TaskDependencyResponse, status_code=201)
 def add_task_dependency(dep_in: TaskDependencyCreate, db: Session = Depends(get_db)):
