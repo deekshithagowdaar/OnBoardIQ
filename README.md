@@ -27,6 +27,7 @@
 11. [How to Run Tests](#11-how-to-run-tests)
 12. [Main End-to-End Demonstration Walkthrough](#12-main-end-to-end-demonstration-walkthrough)
 13. [Mock Integrations & Limitations](#13-mock-integrations--limitations)
+14. [Configuration & Environment Variables](#14-configuration--environment-variables)
 
 ---
 
@@ -411,3 +412,34 @@ Follow this exact workflow to demonstrate OnboardIQ's core capabilities:
 - **Dayforce Hackathon Prototype**: All department APIs (HR, IT, Payroll, Benefits) are implemented as high-fidelity simulated mock gateways (`app/integrations/mock_apis.py`). They demonstrate realistic latency, payloads, and state mutations without connecting to proprietary production Dayforce endpoints.
 - **LLM Integration**: Configured for local open-weights execution (e.g. Ollama `llama3`). A deterministic fallback demo mode is active by default to guarantee 100% operational reliability even if external model servers are offline.
 - **Security Scope**: Includes role-based access control (Manager / HR Admin / Department User) and audit logging for hackathon demonstration purposes.
+
+## 14. Configuration & Environment Variables
+
+OnboardIQ uses environment variables to configure its database connection, local LLM integration, demo mode, and frontend API communication.
+
+### 14.1 Backend Configuration
+
+The backend configuration is managed through `backend/app/config.py` using Pydantic Settings. Environment variables can be defined in a `.env` file.
+
+Create a `.env` file using the provided example:
+
+```bash
+cp .env.example .env
+```
+
+For Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+### 14.2 Environment Variables Reference
+
+| Variable | Description | Example Value |
+|---|---|---|
+| `DATABASE_URL` | Database connection string. PostgreSQL is recommended, with SQLite fallback support. | `postgresql://onboardiq:onboardiq_password@localhost:5432/onboardiq` |
+| `OLLAMA_BASE_URL` | Base URL of the local Ollama service. | `http://localhost:11434` |
+| `OLLAMA_MODEL` | Name of the local model used for LLM integration. | `llama3` |
+| `USE_LOCAL_LLM` | Controls whether local LLM integration is enabled. | `false` |
+| `DEMO_MODE` | Enables the configured demonstration mode. | `true` |
+| `VITE_API_BASE_URL` | Frontend API base URL used to communicate with the backend. | `http://localhost:8000/api` |
